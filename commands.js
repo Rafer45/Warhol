@@ -26,8 +26,7 @@ module.exports = {
         message.edit(msg + "¯\\_(ツ)_\/¯");
     },
 
-    'hideyourshame': (message, config, msg, n=0) => {
-        msg = msg.slice(n.length + 1),
+    'hideyourshame': (message, config, _, n=0) => {
         n   = parseInt(n) + 1;
 
         message.channel.fetchMessages( {limit: 99} )
