@@ -9,7 +9,6 @@ module.exports = {
         message.edit("pong!");
     },
 
-    // _ denotes arguments we don't care about
     'selfbot_off': (message) => {
         message.edit("Selfbot logging off.").then(() => {
             console.log("Forced to disconnect.");
@@ -17,6 +16,7 @@ module.exports = {
         });
     },
 
+    // _ denotes arguments we don't care about
     'reply': (message, _, msg) => {
         let cb = '```',
             quotes = msg.split(/\.s\./g),
@@ -28,10 +28,6 @@ module.exports = {
                 .concat(reply)
         );
     },
-
-    // 'shrug': (message, _, msg) => {
-    //     message.edit(msg + "¯\\_(ツ)_\/¯");
-    // },
 
     'hideyourshame': (message, config, _, n=0) => {
         n   = parseInt(n) + 1;
@@ -47,8 +43,10 @@ module.exports = {
 
     'eval': (message, config, msg) => {
         try {
-        message.channel.send(`Input\n\`\`\`js\n${msg}\`\`\`${''
-                            }Output\n\`\`\`js\n${eval(msg)}\`\`\``)
+        message.channel.send(
+                            `Input\n\`\`\`js\n${msg}\`\`\``+
+                            `Output\n\`\`\`js\n${eval(msg)}\`\`\``
+                            )
                        .catch(e => message.channel.send(e))
         } catch (e) {
             message.channel.send(e)
