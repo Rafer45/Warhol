@@ -1,4 +1,6 @@
 
+const static_commands = require('./static_commands.js')
+
 // Commands are called in the following manner:
 // commands[command](message, config, msg, ...parameters)
 // msg is the message content without the prefix or command
@@ -16,15 +18,20 @@ module.exports = {
     },
 
     'reply': (message, _, msg) => {
-        let arr = msg.split(/\.s\.(.+)/)
+        let cb = '```',
+            quotes = msg.split(/\.s\./g),
+            reply  = quotes.pop();
+
         message.edit(
-            `\`\`\`css\n> ${arr[0]}\`\`\`${arr[1]}`
+            quotes.map(q => `${cb}css\n> ${q}${cb}`)
+                .join('')
+                .concat(reply)
         );
     },
 
-    'shrug': (message, _, msg) => {
-        message.edit(msg + "¯\\_(ツ)_\/¯");
-    },
+    // 'shrug': (message, _, msg) => {
+    //     message.edit(msg + "¯\\_(ツ)_\/¯");
+    // },
 
     'hideyourshame': (message, config, _, n=0) => {
         n   = parseInt(n) + 1;
@@ -36,5 +43,21 @@ module.exports = {
                     .slice(0,n)
                     .forEach(message => message.delete());
             });
+    },
+
+    'eval': (message, config, msg) => {
+        try {
+        message.channel.send(`Input\n\`\`\`js\n${msg}\`\`\`${''
+                            }Output\n\`\`\`js\n${eval(msg)}\`\`\``)
+                       .catch(e => message.channel.send(e))
+        } catch (e) {
+            message.channel.send(e)
+        }
+    }
+}
+
+for(let key in static_commands) {
+    module.exports[key] = (message, _, msg) => {
+        message.edit(`${msg} ${static_commands[key]}`);
     }
 }

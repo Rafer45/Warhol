@@ -18,7 +18,7 @@ client.on('message', (message) => {
         msg = _content.slice(command.length + 1);
 
     if (commands[command] !== undefined) {
-        commands[command](message, config, msg, ...params);
+        commands[command].call(client, message, config, msg, ...params);
     }
 });
 
