@@ -19,8 +19,8 @@ module.exports = {
     // _ denotes arguments we don't care about
     'reply': (message, _, msg) => {
         let cb = '```',
-            quotes = msg.split(/\.s\./g),
-            reply  = quotes.pop();
+            quotes = msg.split('.s.'),
+            reply  = (quotes.length > 1) ? quotes.pop() : "";
 
         message.edit(
             quotes.map(q => `${cb}css\n> ${q}${cb}`)
