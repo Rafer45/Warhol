@@ -72,11 +72,11 @@ module.exports = {
     },
 };
 
-const newStaticCommand = (k, v) => {
+function newStaticCommand(k, v) {
     module.exports[k] = (message, _, msg) => {
         message.edit(`${msg} ${v}`);
     };
-};
+}
 
 Object.keys(staticCommands).forEach((k) => {
     newStaticCommand(k, staticCommands[k]);
