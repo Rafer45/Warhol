@@ -1,21 +1,22 @@
 
+const config = require('./config.json');
+const commands = require('./commands.js');
 const Discord = require('discord.js');
+
 const client = new Discord.Client();
 
-const config = require('./config.json');
-const commands = require('./commands.js')
-
 client.on('ready', () => {
-    console.log("I am ready!");
+    console.log('I am ready!');
 });
 
 client.on('message', (message) => {
     // It's a selfbot, so ignore messages from those who aren't the owner.
-    if (message.author.id !== config.soupmaster || !message.content.startsWith(config.prefix)) return;
+    if (message.author.id !== config.soupmaster
+    || !message.content.startsWith(config.prefix)) return;
 
-    let _content = message.content.slice(config.prefix.length),
-        [command, ...params] = _content.split(/ +/),
-        msg = _content.slice(command.length + 1);
+    const contents = message.content.slice(config.prefix.length);
+    const [command, ...params] = contents.split(/ +/);
+    const msg = contents.slice(command.length).trim();
 
     if (commands[command] !== undefined) {
         commands[command].call(client, message, config, msg, ...params);
@@ -23,7 +24,7 @@ client.on('message', (message) => {
 });
 
 client.on('disconnected', () => {
-    console.log("Disconnected!");
+    console.log('Disconnected!');
     process.exit(0);
 });
 
