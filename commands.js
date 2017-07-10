@@ -1,5 +1,6 @@
 
-const staticCommands = require('./static_commands.js');
+const staticCommands = require('./static_commands.json');
+const fs = require('fs');
 
 // Commands are called in the following manner:
 // commands[command](message, config, msg, ...parameters)
@@ -9,7 +10,7 @@ module.exports = {
         message.edit('pong!');
     },
 
-    selfbot_off: (message) => {
+    selfbotoff: (message) => {
         message.edit('Selfbot logging off.').then(() => {
             console.log('Forced to disconnect.');
             process.exit(0);
@@ -41,6 +42,24 @@ module.exports = {
             });
     },
 
+    newcommand: (message, config, msg, key) => {
+        const val = msg.slice(key.length).trim();
+        if (!key || !val) {
+            message.channel.send('Provide a key and some content for the command.');
+        } else if (!Object.keys(staticCommands).includes(key)) {
+            staticCommands[key] = val;
+            fs.writeFile(
+                './static_commands.json',
+                JSON.stringify(staticCommands, null, 4),
+                console.error,
+            );
+            newStaticCommand(key, staticCommands[key]);
+            message.channel.send(`New command added.\nCommand key: \`${key}\`\nCommand value: \`${val}\``);
+        } else {
+            message.channel.send('There is already a command with that key.');
+        }
+    },
+
     eval: (message, config, msg) => {
         try {
             message.channel.send(
@@ -53,8 +72,12 @@ module.exports = {
     },
 };
 
-Object.keys(staticCommands).forEach((k) => {
+const newStaticCommand = (k, v) => {
     module.exports[k] = (message, _, msg) => {
-        message.edit(`${msg} ${staticCommands[k]}`);
+        message.edit(`${msg} ${v}`);
     };
+};
+
+Object.keys(staticCommands).forEach((k) => {
+    newStaticCommand(k, staticCommands[k]);
 });
